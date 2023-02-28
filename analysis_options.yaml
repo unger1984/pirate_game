@@ -1,0 +1,104 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  plugins:
+    - dart_code_metrics
+
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+    - "lib/generated/**"
+
+  language:
+    strict-inference: true
+    strict-raw-types: true
+
+  errors:
+    invalid_annotation_target: ignore # мешает freezed
+    unnecessary_getters_setters: ignore # мешает делать сеттеры и геттеры для приватных свойств
+    lines_longer_than_80_chars: ignore # мешает длинне строк
+
+linter:
+  rules:
+    always_use_package_imports: true # использовать полные импорты вместо сокращенных
+
+dart_code_metrics:
+  anti-patterns:
+    - long-method
+    - long-parameter-list
+  metrics:
+    cyclomatic-complexity: 20
+    maximum-nesting-level: 5
+    number-of-parameters: 10
+    source-lines-of-code: 60
+  metrics-exclude:
+    - test/**
+    - lib/generated/**
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+  rules:
+    - always-remove-listener # всегда удалять слушатели
+    #    - avoid-banned-imports: # настройка для запрещенных импортов
+    #        entries:
+    #          - paths: ["some/folder/.*\.dart", "another/folder/.*\.dart"]
+    #            deny: [ "package:flutter/material.dart" ]
+    #            message: "Do not import Flutter Material Design library, we should not depend on it!"
+    - avoid-border-all # Border.fromBorderSide
+#    - avoid-collection-methods-with-unrelated-types # места взаимодействия с коллекциями где используется не связанный тип!
+    - avoid-duplicate-exports # ругается на дублирующиеся экспорты
+    #   - avoid-dynamic # запрет использования dynamic
+    - avoid-global-state # все изменяемые глобальные переменные
+    #    - avoid-ignoring-return-values # игнорирование возвращаемых значений
+    #    - avoid-late-keyword # не должно быть late
+    - avoid-missing-enum-constant-in-map # предупреждать когда не все значения энума обработаны
+    - avoid-nested-conditional-expressions: # ругаться на вложенные сокращенные условия
+        acceptable-level: 2
+    #   - avoid-non-ascii-symbols # ругаться на не английские строки
+    - avoid-non-null-assertion # ругаться на !
+    - avoid-returning-widgets # запрещать методы возвращающие Widget
+    - avoid-shrink-wrap-in-lists # ругается на обернутый в колонку ListViw с shrinkWrap
+    # - avoid-top-level-members-in-tests # ругается если в тестах используются глобальные переменные
+    #    - avoid-throw-in-catch-block # неиспользовать try catch
+    - avoid-unrelated-type-assertions # лишнее is
+    - avoid-unnecessary-setstate # ругаться на setState вызванную из initState, didUpdateWidget или build
+    - avoid-unused-parameters # ругаться на неиспользуемые параметры
+#    - avoid-unnecessary-type-assertions # ругаться на is и whereType операторы когда они не нужны
+    - avoid-unnecessary-type-casts # ругаться на приведение типов когда оно не нужно
+    #    - avoid-use-expanded-as-spacer # регается на Expanded содержащий пустой SizedBox/Container - надо Spacer
+    - avoid-wrapping-in-padding # ругатся на Padding виджет когда ребенок имеет поля паддинга
+    - binary-expression-operand-order # ругаться когда при математических операциях цифра идет перед переменной
+    - double-literal-format # ругатся на неполную запись double
+    - format-comment: # формат комментариев
+        only-doc-comments: true
+    #    - member-ordering # ругаться на сортировку параметров
+    - newline-before-return # перед ретурном должна стоять пустая строка
+    - no-boolean-literal-compare # ругаться на сравнение с true и false
+    - no-empty-block # ругаться на пустые {}
+    #    - no-equal-arguments # не должно быть одинаковых значений в аргументах
+    - no-equal-then-else # ругатьтся на одлинаковую логику в if else блоках
+    #    - no-magic-number # не должно быть магических цифр
+    - no-object-declaration # Нельзя возвращать Object
+    - prefer-async-await # запрет использования then
+    - prefer-correct-edge-insets-constructor # ругается на неправильно заданные отступы
+    - prefer-commenting-analyzer-ignores # // ignore: without comment
+    - prefer-conditional-expressions # использовать сокращенный if где это возможно!
+    - prefer-const-border-radius # использовать BorderRadius.all(Radius.circular(value))
+    - prefer-correct-identifier-length: # длинна переменных не менее 2 символов
+        exceptions: [ '_' ]
+        min-identifier-length: 2
+    - prefer-correct-type-name # использовать корректные имена классов
+    - prefer-enums-by-name # ругается на firstWhere вместо byName при переборе энумов
+    - prefer-extracting-callbacks # выносить обработчики в отдельные методы
+    - prefer-immediate-return # return должен быть проще
+    - prefer-first # исплользоать list.first вместо list[0]
+    - prefer-last # использовать list.last вместо list[n]
+    #    - prefer-match-file-name # имена файлов должны совпадать с именем класса
+    #    - prefer-single-widget-per-file # один виджет на файл
+    - prefer-moving-to-variable # дублирующиеся цепочки вызовов результат которых можно было сохранить в переменной
+    - prefer-trailing-comma: # не забываем запятую после аргументов
+        break-on: 5
+    - use-setstate-synchronously:
+        methods:
+          - setState

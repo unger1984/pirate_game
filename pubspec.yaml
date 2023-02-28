@@ -1,0 +1,85 @@
+name: pirate
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.2 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  bloc_concurrency: ^0.2.1
+  colorize: ^3.0.0
+  flutter_bloc: ^8.1.2
+  flutter_dotenv: ^5.0.2
+  flutter_launcher_icons: ^0.12.0
+  flutter_secure_storage: ^8.0.0
+  freezed_annotation: ^2.2.0
+  get_it: ^7.2.0
+  intl: ^0.18.0
+  json_annotation: ^4.8.0
+  logging: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner:
+  dart_code_metrics: ^5.6.0
+  flutter_lints: ^2.0.1
+  freezed: ^2.3.2
+  intl_utils: ^2.8.2
+  json_serializable: ^6.6.1
+
+dependency_overrides:
+  intl: ^0.18.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env
+
+flutter_intl:
+  enabled: true
+  class_name: S
+  main_locale: en
+  arb_dir: lib/l10n
+  output_dir: lib/generated
+
+flutter_icons:
+  android: false
+  ios: false
+  web:
+    generate: true
+    image_path: "assets/png/logo.png"
+  
+
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
