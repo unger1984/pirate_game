@@ -1,12 +1,17 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pirate/domain/datasources/audio_source.dart';
 import 'package:pirate/domain/repositories/settings_repository.dart';
 import 'package:pirate/domain/usecases/locale_use_case.dart';
+import 'package:pirate/domain/usecases/sound_use_case.dart';
 import 'package:pirate/generated/l10n.dart';
 import 'package:pirate/presentation/blocs/locale_bloc.dart';
+import 'package:pirate/presentation/blocs/sound_bloc.dart';
+import 'package:pirate/presentation/pirate_game.dart';
 
 @immutable
 class App extends StatefulWidget {
@@ -17,6 +22,12 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final soundBLoC = SoundBLoC(
+    soundUseCase: SoundUseCase(
+      audioSource: GetIt.I<AudioSource>(),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -27,18 +38,24 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
+    soundBLoC.close();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LocaleBLoC>(
-      create: (_) => LocaleBLoC(
-        localeUseCase: LocaleUseCase(
-          settingsRepository: GetIt.I<SettingsRepository>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<LocaleBLoC>(
+          create: (_) => LocaleBLoC(
+            localeUseCase: LocaleUseCase(
+              settingsRepository: GetIt.I<SettingsRepository>(),
+            ),
+          ),
         ),
-      ),
+        BlocProvider<SoundBLoC>.value(value: soundBLoC),
+      ],
       child: BlocBuilder<LocaleBLoC, LocaleState>(
         builder: (context, state) => state.map(
           loading: (_) => const MaterialApp(home: Scaffold(body: Center(child: CircularProgressIndicator()))),
@@ -53,10 +70,8 @@ class _AppState extends State<App> {
             supportedLocales: S.delegate.supportedLocales,
             onGenerateTitle: (context) => S.of(context).title,
             restorationScopeId: 'root',
-            home: Scaffold(
-              body: Center(
-                child: Text(st.locale),
-              ),
+            home: GameWidget(
+              game: PirateGame(soundBLoC: soundBLoC),
             ),
           ),
         ),

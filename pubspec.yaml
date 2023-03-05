@@ -14,6 +14,8 @@ dependencies:
 
   bloc_concurrency: ^0.2.1
   colorize: ^3.0.0
+  flame: ^1.6.0
+  flame_bloc: ^1.8.2
   flutter_bloc: ^8.1.2
   flutter_dotenv: ^5.0.2
   flutter_launcher_icons: ^0.12.0
@@ -21,8 +23,10 @@ dependencies:
   freezed_annotation: ^2.2.0
   get_it: ^7.2.0
   intl: ^0.18.0
+  just_audio: ^0.9.31
   json_annotation: ^4.8.0
   logging: ^1.1.1
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +46,11 @@ flutter:
 
   assets:
     - .env
+    - assets/png/
+    - assets/jpg/
+    - assets/images/jpg/
+    - assets/images/png/
+    - assets/audio/
 
 flutter_intl:
   enabled: true

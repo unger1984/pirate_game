@@ -1,4 +1,8 @@
 {
     "@@locale": "en",
-    "title": "Pirate Game"
+    "title": "Pirate Game",
+
+    "settings": "SETTINGS",
+    "save": "SAVE",
+    "start": "START"
 }

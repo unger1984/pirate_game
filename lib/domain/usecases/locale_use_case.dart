@@ -1,9 +1,7 @@
-import 'package:logging/logging.dart';
 import 'package:pirate/domain/repositories/settings_repository.dart';
 import 'package:pirate/utils/syslocale/syslocale.dart';
 
 class LocaleUseCase {
-  static final _log = Logger('LocaleUseCase');
   final SettingsRepository _settingsRepository;
 
   const LocaleUseCase({required SettingsRepository settingsRepository}) : _settingsRepository = settingsRepository;
