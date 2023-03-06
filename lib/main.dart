@@ -13,6 +13,7 @@ import 'package:pirate/utils/log.dart';
 Future<void> main() async {
   final log = Logger('Main');
   WidgetsFlutterBinding.ensureInitialized();
+  // await DesktopWindow.setWindowSize(Size(1080, 1920));
 
   await dotenv.load(fileName: ".env");
   await setupGetIt();
