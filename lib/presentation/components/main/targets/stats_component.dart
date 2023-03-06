@@ -50,7 +50,7 @@ class StatsComponent extends PositionComponent {
     _scoreStar2 = star2Val;
     _scoreStar3 = star3Val;
 
-    star3.position = Vector2(_max, 0);
+    star3.position = Vector2(_max - 10, 0);
 
     var score1X = _scoreStar1 * _max / _scoreStar3;
     star1.position = Vector2(score1X, 0);
