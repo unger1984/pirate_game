@@ -24,8 +24,8 @@ class PirateGame extends FlameGame with HasTappables {
 
     await add(blocProvider);
 
-    // await blocProvider.add(startScreen);
-    await blocProvider.add(mainScreen);
+    await blocProvider.add(startScreen);
+    // await blocProvider.add(mainScreen);
 
     // Future.delayed(Duration(seconds: 10), () {
     //   blocProvider.remove(startScreen);

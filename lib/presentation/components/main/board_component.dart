@@ -4,6 +4,11 @@ import 'package:flame/components.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pirate/domain/datasources/audio_source.dart';
 import 'package:pirate/presentation/components/main/gems/gem.dart';
+import 'package:pirate/presentation/components/main/gems/gem_clearable.dart';
+import 'package:pirate/presentation/components/main/gems/gem_colored.dart';
+import 'package:pirate/presentation/components/main/gems/gem_empty.dart';
+import 'package:pirate/presentation/components/main/gems/gem_movable.dart';
+import 'package:pirate/presentation/components/main/gems/gem_simple.dart';
 import 'package:pirate/presentation/pirate_game.dart';
 import 'package:pirate/presentation/screens/main_screen.dart';
 import 'package:pirate/utils/const.dart';
@@ -15,6 +20,8 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
   final _random = Random();
   final _audio = GetIt.I<AudioSource>();
   final MainScreen screen;
+  Gem? selectedGem;
+  bool allowClick = true;
 
   BoardComponent({required this.screen});
 
@@ -27,7 +34,17 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
 
     await fillBg();
 
-    var bg = boardBack[Vector2(5, 3)];
+    var bg = boardBack[Vector2(0, 0)];
+    if (bg != null) {
+      remove(bg);
+      boardBack.remove(Vector2(0, 0));
+    }
+    bg = boardBack[Vector2(8, 0)];
+    if (bg != null) {
+      remove(bg);
+      boardBack.remove(Vector2(8, 0));
+    }
+    bg = boardBack[Vector2(5, 3)];
     if (bg != null) {
       remove(bg);
       boardBack.remove(Vector2(5, 3));
@@ -49,6 +66,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
   }
 
   Future<void> spawnNewGems() async {
+    allowClick = false;
     bool needRefill = true;
     while (needRefill) {
       bool inverse = false;
@@ -60,7 +78,8 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
       var count = await clearAllValidMatches();
       needRefill = count > 0;
     }
-    print(screen.targets.complete);
+    // print(screen.targets.complete);
+    allowClick = true;
   }
 
   Future<void> fillBg() async {
@@ -88,8 +107,19 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     }
   }
 
-  Future<void> moveGem(GemMovable gem, Vector2 pos) async {
-    await gem.move(coordinate(pos));
+  Future<void> fillOnStart() async {
+    for (var pos in boardFront.keys) {
+      final empty = boardFront[pos];
+      if (empty != null) {
+        remove(empty);
+        await spawnGem(pos, GemType.colored);
+      }
+    }
+    spawnNewGems();
+  }
+
+  Future<void> moveGem(GemMovable gem, Vector2 pos, {double speed = moveSpeed}) async {
+    await gem.move(coordinate(pos), speed: speed);
     gem.pos = pos;
     boardFront[pos] = gem;
   }
@@ -102,14 +132,13 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         var col = inverse ? boardSize.x - 1 - loopX : loopX;
 
         final gem = boardFront[Vector2(col, row)];
-
         if (gem != null && gem is GemMovable) {
           final gemDown = boardFront[Vector2(col, row + 1)];
           final back = boardBack[Vector2(col, row + 1)];
           if (back != null && gemDown != null && gemDown.type == GemType.empty) {
             // Если гем под ним пустой
             remove(gemDown);
-            futures.add(moveGem(gem, Vector2(col, row + 1)));
+            futures.add(moveGem(gem, Vector2(col, row + 1), speed: spawnSpeed));
             futures.add(spawnGem(Vector2(col, row), GemType.empty));
             hasMoved = true;
           } else {
@@ -132,9 +161,10 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
                     }
 
                     if (!hasGemAbove) {
-                      remove(diagGem);
-                      futures.add(moveGem(gem, Vector2(diagX, row + 1)));
-                      futures.add(spawnGem(Vector2(col, row), GemType.empty));
+                      // TODO есть глюки в алгоритме
+                      if (children.contains(diagGem)) remove(diagGem);
+                      await moveGem(gem, Vector2(diagX, row + 1), speed: spawnDiagSpeed);
+                      await spawnGem(Vector2(col, row), GemType.empty);
                       hasMoved = true;
                       break;
                     }
@@ -153,7 +183,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
       final gemBelow = boardFront[Vector2(col, 0)];
       if (gemBelow != null && gemBelow.type == GemType.empty) {
         remove(gemBelow);
-        final gem = await spawnGem(Vector2(col, 0), GemType.colored);
+        await spawnGem(Vector2(col, 0), GemType.colored);
 
         // gem.add(txt);
         // final gemTarget = coordinate(gem.pos);
@@ -173,7 +203,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     for (double dir = 0; dir <= 1; dir++) {
       // Перебор по направлению налево и на право
       for (double xOffset = 1; xOffset < boardSize.x; xOffset++) {
-        double col = dir == 0 ? newPos.x - xOffset : newPos.x + xOffset;
+        double col = dir == 0 ? newPos.x + xOffset : newPos.x - xOffset;
 
         if (col < 0 || col >= boardSize.x) {
           // вышли за границу экрана
@@ -183,7 +213,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         final found = boardFront[Vector2(col, newPos.y)];
         if (found != null && found is GemColored && found.color == color) {
           // Найден гем и его цвет совпадает с искомым
-          result.add(found);
+          if (!result.contains(found)) result.add(found);
         } else {
           break;
         }
@@ -210,7 +240,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         final found = boardFront[Vector2(newPos.x, row)];
         if (found != null && found is GemColored && found.color == color) {
           // Найден гем и его цвет совпадает с искомым
-          result.add(found);
+          if (!result.contains(found)) result.add(found);
         } else {
           break;
         }
@@ -229,31 +259,40 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     horisontalGems = _findMatchHorisontal(gem, newPos);
     if (horisontalGems.length >= 3) {
       matchGems.addAll(horisontalGems);
+    }
+
+    if (horisontalGems.length >= 3) {
       // для всех найденых ищем по вертикали
       for (int index = 0; index < horisontalGems.length; index++) {
         verticalGems = _findMatchVertical(gem, Vector2(horisontalGems[index].pos.x, newPos.y));
         if (verticalGems.length < 2) {
           verticalGems.clear();
         } else {
-          matchGems.addAll(verticalGems);
+          for (var found in verticalGems) {
+            if (!matchGems.contains(found)) matchGems.add(found);
+          }
         }
       }
     }
 
     if (matchGems.length >= 3) return matchGems;
 
+    matchGems.clear();
     horisontalGems.clear();
     verticalGems.clear();
     verticalGems = _findMatchVertical(gem, newPos);
 
     if (verticalGems.length >= 3) {
       matchGems.addAll(verticalGems);
-      for (int index = 0; index < verticalGems.length; index++) {
-        horisontalGems = _findMatchHorisontal(gem, Vector2(newPos.x, verticalGems[index].pos.y));
-        if (horisontalGems.length < 2) {
-          horisontalGems.clear();
-        } else {
-          matchGems.addAll(horisontalGems);
+    }
+
+    for (int index = 0; index < verticalGems.length; index++) {
+      horisontalGems = _findMatchHorisontal(gem, Vector2(newPos.x, verticalGems[index].pos.y));
+      if (horisontalGems.length < 2) {
+        horisontalGems.clear();
+      } else {
+        for (var found in horisontalGems) {
+          if (!matchGems.contains(found)) matchGems.add(found);
         }
       }
     }
@@ -265,67 +304,70 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
 
   Future<int> clearAllValidMatches() async {
     int count = 0;
-    bool isCollect = false;
 
+    final futures = <Future<bool>>[];
+    final cleared = <Gem>[];
     for (double row = 0; row < boardSize.y; row++) {
       for (double col = 0; col < boardSize.x; col++) {
         final gem = boardFront[Vector2(col, row)];
-        final futures = <Future<void>>[];
-        final cleared = <Gem>[];
         if (gem != null && gem is GemColored) {
           final match = findMatch(gem, Vector2(col, row));
           if (match != null) {
-            for (int i = 0; i < match.length; i++) {
-              if (!cleared.contains(match.elementAt(i))) {
-                futures.add(clearGem(match.elementAt(i) as GemColored));
-                cleared.add(match.elementAt(i));
-                count++;
+            for (int index = 0; index < match.length; index++) {
+              final found = match.elementAt(index);
+              if (!cleared.contains(found)) {
+                futures.add(clearGem(found));
+                cleared.add(found);
               }
             }
-            await Future.wait(futures);
-            cleared.clear();
-            isCollect = true;
-            if (isCollect) {
-              await _audio.playSound('assets/audio/collect.mp3');
-            }
+            await _audio.playSound('assets/audio/collect.mp3');
           }
         }
       }
     }
+    cleared.clear();
+    count += (await Future.wait<bool>(futures)).fold(0, (previousValue, res) => previousValue + (res ? 1 : 0));
 
     return count;
   }
 
-  Future<bool> clearGem(GemColored gem) async {
-    gem.priority = 0;
-    Vector2 moveTo = Vector2(size.x / 2, -position.y + 200);
-    final target = screen.targets;
-    final color = gem.color.toString();
-    final chest1 = target.chest1;
-    final chest2 = target.chest2;
-    final chest3 = target.chest3;
+  Future<bool> clearGem(Gem gem) async {
+    if (gem is GemColored) {
+      final target = screen.targets;
+      final color = gem.color.toString();
+      final chest1 = target.chest1;
+      final chest2 = target.chest2;
+      final chest3 = target.chest3;
 
-    if (color == chest1.gem) {
-      moveTo = Vector2(chest1.position.x + chest1.size.x / 2, -position.y);
-    } else if (color == chest2.gem) {
-      moveTo = Vector2(chest2.position.x + chest2.size.x / 3, -position.y);
-    } else if (color == chest3.gem) {
-      moveTo = Vector2(chest3.position.x + chest3.size.x / 3, -position.y);
-    }
-    // gem.changeParent(screen);
-    await gem.clear(moveTo, speed: 1500, duration: 0.8);
-    if (color == chest1.gem) {
-      chest1.addScore(1);
-    } else if (color == chest2.gem) {
-      chest2.addScore(1);
-    } else if (color == chest3.gem) {
-      chest3.addScore(1);
-    }
-    target.addScore(1);
-    remove(gem);
-    await spawnGem(gem.pos, GemType.empty);
+      // BlackMagic!
+      // ignore: avoid-unrelated-type-assertions
+      if (gem is GemClerable) {
+        gem.priority = 0;
+        Vector2 moveTo = Vector2(size.x / 2, -position.y + 200);
+        if (color == chest1.gem) {
+          moveTo = Vector2(chest1.position.x + chest1.size.x / 2, -position.y);
+        } else if (color == chest2.gem) {
+          moveTo = Vector2(chest2.position.x + chest2.size.x / 3, -position.y);
+        } else if (color == chest3.gem) {
+          moveTo = Vector2(chest3.position.x + chest3.size.x / 3, -position.y);
+        }
+        await (gem as GemClerable).clear(moveTo, speed: clearSpeed, duration: clearDuration);
+        if (color == chest1.gem) {
+          chest1.addScore(1);
+        } else if (color == chest2.gem) {
+          chest2.addScore(1);
+        } else if (color == chest3.gem) {
+          chest3.addScore(1);
+        }
+        target.addScore(1);
+        remove(gem);
+        await spawnGem(gem.pos, GemType.empty);
 
-    return true;
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Future<Gem> spawnGem(Vector2 pos, GemType type) async {
@@ -335,7 +377,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         gem = GemEmpty();
         break;
       case GemType.colored:
-        gem = GemColored(color: GemColor.values.elementAt(_random.nextInt(GemColor.values.length - 1)));
+        gem = GemSimple(color: GemColor.values.elementAt(_random.nextInt(GemColor.values.length - 1)), board: this);
         break;
     }
     boardFront[pos] = gem;
@@ -349,10 +391,55 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
   Vector2 coordinate(Vector2 pos) {
     final bg = boardBack[pos];
     if (bg != null) {
-      return bg.position;
+      return bg.position + bg.size / 2;
     }
 
     return Vector2.zero();
+  }
+
+  bool isAdjacent(Gem gem1, Gem gem2) {
+    final pos1 = gem1.pos;
+    final pos2 = gem2.pos;
+
+    return ((pos1.x == gem2.pos.x && (pos1.y - pos2.y).abs().toInt() == 1) ||
+        (pos1.y == pos2.y && (pos1.x - pos2.x).abs().toInt() == 1));
+  }
+
+  Future<void> onTapGem(Gem gem) async {
+    if (allowClick) {
+      final selected = selectedGem;
+      if (selected != null && selected is GemMovable && gem is GemMovable) {
+        selected.cancelShake();
+        if (isAdjacent(gem, selected) && selected.pos != gem.pos) {
+          await swapGems(gem, selected);
+          if (findMatch(gem as GemColored, gem.pos) != null ||
+              findMatch(selected as GemColored, selected.pos) != null) {
+            selectedGem = null;
+            await spawnNewGems();
+          } else {
+            await swapGems(gem, selected);
+            selectedGem = null;
+          }
+        } else if (selected.pos == gem.pos) {
+          selectedGem = null;
+        } else {
+          selectedGem = gem;
+          (selectedGem as GemMovable).startShake();
+        }
+      } else if (gem is GemMovable) {
+        selectedGem = null;
+        selectedGem = gem;
+        (selectedGem as GemMovable).startShake();
+      }
+    }
+  }
+
+  Future<void> swapGems(GemMovable gem1, GemMovable gem2) async {
+    final oldPos = gem1.pos.clone();
+    final futures = <Future<void>>[];
+    futures.add(moveGem(gem1, gem2.pos));
+    futures.add(moveGem(gem2, oldPos));
+    await Future.wait(futures);
   }
 
   @override

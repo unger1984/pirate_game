@@ -45,7 +45,8 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     board.position.y = targets.position.y + targets.scaledSize.y + 20;
 
     // board.init(targets);
-    board.spawnNewGems();
+    // board.spawnNewGems();
+    board.fillOnStart();
 
     await add(btnSettings);
     await add(popupSettings);
