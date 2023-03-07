@@ -80,4 +80,7 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
   void addScore(int score) {
     stats.addScore(score);
   }
+
+  bool get complete =>
+      chest1.status == ChestStatus.close && chest2.status == ChestStatus.close && chest3.status == ChestStatus.close;
 }

@@ -3,35 +3,9 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/rendering.dart';
+import 'package:pirate/generated/l10n.dart';
 
 class FlagComponent extends SpriteComponent with HasGameRef {
-  final TextComponent title1 = TextComponent(
-    text: 'THE',
-    textRenderer: TextPaint(
-      style: TextStyle(
-        color: BasicPalette.white.color,
-        fontSize: 44,
-      ),
-    ),
-  );
-  final TextComponent title2 = TextComponent(
-    text: 'PIRATE',
-    textRenderer: TextPaint(
-      style: TextStyle(
-        color: BasicPalette.white.color,
-        fontSize: 84,
-      ),
-    ),
-  );
-  final TextComponent title3 = TextComponent(
-    text: 'GAME',
-    textRenderer: TextPaint(
-      style: TextStyle(
-        color: BasicPalette.white.color,
-        fontSize: 44,
-      ),
-    ),
-  );
   final PositionComponent text = PositionComponent();
 
   @override
@@ -42,6 +16,37 @@ class FlagComponent extends SpriteComponent with HasGameRef {
     if (sp != null) {
       size = sp.srcSize;
     }
+
+    final white = BasicPalette.white.color;
+
+    final TextComponent title1 = TextComponent(
+      text: S.current.title1,
+      textRenderer: TextPaint(
+        style: TextStyle(
+          color: white,
+          fontSize: 44,
+        ),
+      ),
+    );
+    final TextComponent title2 = TextComponent(
+      text: S.current.title2,
+      textRenderer: TextPaint(
+        style: TextStyle(
+          color: white,
+          fontSize: 84,
+        ),
+      ),
+    );
+    final TextComponent title3 = TextComponent(
+      text: S.current.title3,
+      textRenderer: TextPaint(
+        style: TextStyle(
+          color: white,
+          fontSize: 44,
+        ),
+      ),
+    );
+
     final size1 = title1.size;
     final size2 = title2.size;
     final size3 = title3.size;

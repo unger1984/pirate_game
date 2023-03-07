@@ -64,6 +64,8 @@ class BubbleComponent extends SpriteComponent {
     _text.text = '$_current/$_targetCount'.padLeft(7, ' ');
   }
 
+  int get target => _targetCount;
+
   void addScore(int value) {
     current += value;
   }

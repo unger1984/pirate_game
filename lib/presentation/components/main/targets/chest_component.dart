@@ -62,12 +62,18 @@ class ChestComponent extends PositionComponent {
     _bubble.setGem(value);
   }
 
+  String get gem => _bubble.gem;
+
   set target(int value) {
     _bubble.target = value;
   }
 
   void addScore(int value) {
     _bubble.addScore(value);
+    if (current >= _bubble.target) {
+      status = ChestStatus.close;
+      chest.sprite = _spriteClose;
+    }
   }
 
   int get current => _bubble.current;

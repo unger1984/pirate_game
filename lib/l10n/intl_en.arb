@@ -2,6 +2,9 @@
     "@@locale": "en",
     "title": "Pirate Game",
 
+    "title1": "THE",
+    "title2": "PIRATE",
+    "title3": "GAMGE",
     "settings": "SETTINGS",
     "save": "SAVE",
     "start": "START"

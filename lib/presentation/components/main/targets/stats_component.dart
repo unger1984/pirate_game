@@ -65,7 +65,9 @@ class StatsComponent extends PositionComponent {
   void addScore(int score) {
     counter.count += score;
     var current = counter.count;
-    active.size.x = (current / _scoreStar3) * _max;
+    var nwidth = (current / _scoreStar3) * _max;
+    if (nwidth > _max) nwidth = _max;
+    active.size.x = nwidth;
     if (current >= _scoreStar1 && !star1.active) star1.active = true;
     if (current >= _scoreStar2 && !star2.active) star2.active = true;
     if (current >= _scoreStar3 && !star3.active) star3.active = true;
