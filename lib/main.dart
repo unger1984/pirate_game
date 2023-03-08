@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
+import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,6 +15,7 @@ Future<void> main() async {
   final log = Logger('Main');
   WidgetsFlutterBinding.ensureInitialized();
   // await DesktopWindow.setWindowSize(Size(1080, 1920));
+  await Flame.device.fullScreen();
 
   await dotenv.load(fileName: ".env");
   await setupGetIt();

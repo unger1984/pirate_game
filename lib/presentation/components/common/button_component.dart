@@ -1,19 +1,18 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/events.dart';
+import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pirate/domain/datasources/audio_source.dart';
 import 'package:pirate/domain/usecases/sound_use_case.dart';
 import 'package:pirate/utils/const.dart';
 
-class ButtonComponent extends SpriteComponent with HasGameRef, Tappable {
+class ButtonComponent extends SpriteComponent with HasGameRef, TapCallbacks {
   final soundCase = SoundUseCase(audioSource: GetIt.I<AudioSource>());
   final bool withScale;
-  final bool propagate;
   void Function()? onTap;
 
-  ButtonComponent({Sprite? sprite, this.onTap, this.withScale = false, this.propagate = false}) {
+  ButtonComponent({Sprite? sprite, this.onTap, this.withScale = false}) {
     super.sprite = sprite;
     if (sprite != null) {
       size = sprite.srcSize;
@@ -44,18 +43,16 @@ class ButtonComponent extends SpriteComponent with HasGameRef, Tappable {
   }
 
   @override
-  bool onTapDown(TapDownInfo info) {
+  void onTapDown(TapDownEvent event) {
     add(ColorEffect(
       Colors.black.withOpacity(0.1),
       const Offset(0.0, 0.1),
       EffectController(duration: 0.1),
     ));
-
-    return propagate ? super.onTapDown(info) : false;
   }
 
   @override
-  bool onTapUp(TapUpInfo info) {
+  void onTapUp(TapUpEvent event) {
     add(ColorEffect(
       Colors.black.withOpacity(0.1),
       Offset.zero,
@@ -66,18 +63,14 @@ class ButtonComponent extends SpriteComponent with HasGameRef, Tappable {
     if (tap != null) {
       tap();
     }
-
-    return propagate ? super.onTapUp(info) : false;
   }
 
   @override
-  bool onTapCancel() {
+  void onTapCancel(TapCancelEvent event) {
     add(ColorEffect(
       Colors.black.withOpacity(0.1),
       Offset.zero,
       EffectController(duration: 0.1),
     ));
-
-    return propagate ? super.onTapCancel() : false;
   }
 }

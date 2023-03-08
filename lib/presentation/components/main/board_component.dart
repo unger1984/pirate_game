@@ -161,7 +161,6 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
                     }
 
                     if (!hasGemAbove) {
-                      // TODO есть глюки в алгоритме
                       if (children.contains(diagGem)) remove(diagGem);
                       await moveGem(gem, Vector2(diagX, row + 1), speed: spawnDiagSpeed);
                       await spawnGem(Vector2(col, row), GemType.empty);
@@ -173,10 +172,10 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
               }
             }
           }
+          await Future.wait(futures);
         }
       }
     }
-    await Future.wait(futures);
 
     // Верхний ряд
     for (double col = 0; col < boardSize.x; col++) {
@@ -380,6 +379,11 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         gem = GemSimple(color: GemColor.values.elementAt(_random.nextInt(GemColor.values.length - 1)), board: this);
         break;
     }
+    // final old = boardFront[pos];
+    // if (old != null && children.contains(old)) {
+    //   boardFront.remove(pos);
+    //   remove(old);
+    // }
     boardFront[pos] = gem;
     gem.pos = pos;
     gem.position = coordinate(pos);
@@ -430,6 +434,30 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         selectedGem = null;
         selectedGem = gem;
         (selectedGem as GemMovable).startShake();
+      }
+    }
+  }
+
+  Future<void> onDragGem(Gem gem1, Gem gem2) async {
+    if (gem1 is GemSimple && gem2 is GemSimple) {
+      print('${gem1.color} ${gem2.color}');
+      if (allowClick) {
+        allowClick = false;
+        final selected = selectedGem;
+        if (selected != null && selected is GemMovable) {
+          selected.cancelShake();
+          selectedGem = null;
+        }
+
+        if (isAdjacent(gem1, gem2) && gem1.pos != gem2.pos) {
+          await swapGems(gem1, gem2);
+          if (findMatch(gem1 as GemColored, gem1.pos) != null || findMatch(gem2 as GemColored, gem2.pos) != null) {
+            await spawnNewGems();
+          } else {
+            await swapGems(gem1, gem2);
+          }
+        }
+        allowClick = true;
       }
     }
   }

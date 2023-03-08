@@ -1,10 +1,11 @@
+import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:pirate/presentation/blocs/sound_bloc.dart';
 import 'package:pirate/presentation/screens/main_screen.dart';
 import 'package:pirate/presentation/screens/start_screen.dart';
 
-class PirateGame extends FlameGame with HasTappables {
+class PirateGame extends FlameGame with HasTappableComponents, HasDraggableComponents {
   final SoundBLoC soundBLoC;
   final startScreen = StartScreen();
   final mainScreen = MainScreen();
@@ -24,8 +25,8 @@ class PirateGame extends FlameGame with HasTappables {
 
     await add(blocProvider);
 
-    await blocProvider.add(startScreen);
-    // await blocProvider.add(mainScreen);
+    // await blocProvider.add(startScreen);
+    await blocProvider.add(mainScreen);
 
     // Future.delayed(Duration(seconds: 10), () {
     //   blocProvider.remove(startScreen);

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:pirate/presentation/pirate_game.dart';
 
 enum GemType {
   empty('empty'),
@@ -31,7 +32,7 @@ enum GemColor {
   String toString() => _color;
 }
 
-abstract class Gem extends PositionComponent {
+abstract class Gem extends PositionComponent with HasGameRef<PirateGame> {
   static final Vector2 gemSize = Vector2.all(114);
   final GemType type;
   Vector2 _pos = Vector2.zero();

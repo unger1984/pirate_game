@@ -6,10 +6,10 @@ const double maxHeight = 1920;
 const double moveSpeed = 1000;
 
 /// Скорость перемещения при падении вниз.
-const double spawnSpeed = 2000;
+const double spawnSpeed = 4000;
 
 /// Скорость перемещения при падении по диагонали.
-const double spawnDiagSpeed = 2000;
+const double spawnDiagSpeed = 4000;
 
 /// Скорость очистки гема.
 const double clearSpeed = 1500;
