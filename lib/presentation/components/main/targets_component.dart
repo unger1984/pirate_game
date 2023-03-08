@@ -1,9 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:pirate/domain/entities/target_entity.dart';
 import 'package:pirate/presentation/components/main/targets/chest_component.dart';
+import 'package:pirate/presentation/components/main/targets/counter_component.dart';
 import 'package:pirate/presentation/components/main/targets/stats_component.dart';
 import 'package:pirate/presentation/pirate_game.dart';
+import 'package:pirate/presentation/screens/main_screen.dart';
 import 'package:pirate/utils/const.dart';
+import 'package:pirate/utils/helper.dart';
 
 class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
   final SpriteComponent sand = SpriteComponent();
@@ -14,6 +17,14 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
   final ChestComponent chest1 = ChestComponent(type: ChestType.left);
   final ChestComponent chest2 = ChestComponent(type: ChestType.center);
   final ChestComponent chest3 = ChestComponent(type: ChestType.right);
+  final CounterComponent counter = CounterComponent();
+  final MainScreen screen;
+
+  int limit = 0;
+  TargetType type = TargetType.moves;
+  double timer = 0;
+
+  TargetsComponent({required this.screen});
 
   @override
   Future<void> onLoad() async {
@@ -51,6 +62,9 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
     await add(chest2);
     await add(chest3);
 
+    await add(counter);
+    counter.position = Vector2(size.x / 2, 0);
+
     chest1.position = Vector2(0, 100);
     chest2.position = Vector2(size.x / 2 - chest2.size.x / 2, 100);
     chest3.position = Vector2(size.x - chest3.size.x, 100);
@@ -71,10 +85,21 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
   }
 
   void init(TargetEntity target) {
+    timer = 0;
     stats.init(target.star1, target.star2, target.star3);
     chest1.init(target.ches1);
     chest2.init(target.ches2);
     chest3.init(target.ches3);
+    type = target.type;
+    limit = target.limit;
+    switch (type) {
+      case TargetType.timer:
+        counter.text = formatTime(limit);
+        break;
+      case TargetType.moves:
+        counter.text = (limit - timer).toInt().toString();
+        break;
+    }
   }
 
   void addScore(int score) {
@@ -83,4 +108,28 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
 
   bool get complete =>
       chest1.status == ChestStatus.close && chest2.status == ChestStatus.close && chest3.status == ChestStatus.close;
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (type == TargetType.timer) {
+      timer += dt;
+      if (limit - timer >= 0) {
+        counter.text = formatTime((limit - timer).toInt());
+      }
+      if (limit - timer <= 0) {
+        screen.endLimit();
+      }
+    }
+  }
+
+  void move() {
+    timer++;
+    if (limit - timer >= 0) {
+      counter.text = (limit - timer).toInt().toString();
+    }
+    if (limit - timer <= 0) {
+      screen.endLimit();
+    }
+  }
 }

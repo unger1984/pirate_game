@@ -12,10 +12,12 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
   final popupSettings = PopupSettingsComponent();
   final bg = SpriteComponent();
   final btnSettings = ButtonComponent(withScale: true);
-  final targets = TargetsComponent();
   late final BoardComponent board = BoardComponent(screen: this);
+  late final TargetsComponent targets = TargetsComponent(screen: this);
 
   final targetConfig = const TargetEntity(
+    type: TargetType.moves,
+    limit: 2,
     ches1: TargetChestEntity(gem: 'red', total: 5),
     ches2: TargetChestEntity(gem: 'green', total: 5),
     ches3: TargetChestEntity(gem: 'blue', total: 5),
@@ -37,7 +39,6 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     btnSettings.onTap = showSettings;
 
     await add(targets);
-
     targets.init(targetConfig);
 
     // board = ;
@@ -62,6 +63,14 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     btnSettings.position = Vector2(size.x - btnSettings.scaledSize.x - mX, mY);
     board.position = Vector2(size.x / 2 - board.scaledSize.x / 2, targets.position.y + targets.scaledSize.y + 20);
     super.onGameResize(size);
+  }
+
+  void endLimit() {
+    board.isEndLevel = true;
+  }
+
+  void showResult() {
+    // TODO
   }
 
   void showSettings() {

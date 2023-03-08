@@ -22,6 +22,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
   final MainScreen screen;
   Gem? selectedGem;
   bool allowClick = true;
+  bool isEndLevel = false;
 
   BoardComponent({required this.screen});
 
@@ -32,7 +33,13 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     size = Vector2(9 * Gem.gemSize.x, 7 * Gem.gemSize.y);
     position = gameRef.size / 2 - size / 2;
 
-    await fillBg();
+    onGameResize(gameRef.size);
+  }
+
+  Future<void> fillOnStart() async {
+    isEndLevel = false;
+    allowClick = false;
+    await _fillBg();
 
     var bg = boardBack[Vector2(0, 0)];
     if (bg != null) {
@@ -60,29 +67,39 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
       boardBack.remove(Vector2(3, 3));
     }
 
-    await fillEmpty();
+    await _fillEmpty();
 
-    onGameResize(gameRef.size);
+    for (var pos in boardFront.keys) {
+      final empty = boardFront[pos];
+      if (empty != null) {
+        remove(empty);
+        await _spawnGem(pos, GemType.colored);
+      }
+    }
+    _spawnNewGems();
   }
 
-  Future<void> spawnNewGems() async {
+  Future<void> _spawnNewGems() async {
     allowClick = false;
     bool needRefill = true;
     while (needRefill) {
       bool inverse = false;
       bool hasMoved = true;
       while (hasMoved) {
-        hasMoved = await fillStep(inverse);
+        hasMoved = await _fillStep(inverse);
         inverse = !inverse;
       }
-      var count = await clearAllValidMatches();
+      var count = await _clearAllValidMatches();
       needRefill = count > 0;
     }
-    // print(screen.targets.complete);
-    allowClick = true;
+    if (!isEndLevel) {
+      allowClick = true;
+    } else {
+      screen.showResult();
+    }
   }
 
-  Future<void> fillBg() async {
+  Future<void> _fillBg() async {
     removeAll(children);
     boardBack.clear();
     final bg1Sprite = await Sprite.load('png/bg1.png');
@@ -101,30 +118,19 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     }
   }
 
-  Future<void> fillEmpty() async {
+  Future<void> _fillEmpty() async {
     for (var pos in boardBack.keys) {
-      spawnGem(pos, GemType.empty);
+      _spawnGem(pos, GemType.empty);
     }
   }
 
-  Future<void> fillOnStart() async {
-    for (var pos in boardFront.keys) {
-      final empty = boardFront[pos];
-      if (empty != null) {
-        remove(empty);
-        await spawnGem(pos, GemType.colored);
-      }
-    }
-    spawnNewGems();
-  }
-
-  Future<void> moveGem(GemMovable gem, Vector2 pos, {double speed = moveSpeed}) async {
+  Future<void> _moveGem(GemMovable gem, Vector2 pos, {double speed = moveSpeed}) async {
     await gem.move(coordinate(pos), speed: speed);
     gem.pos = pos;
     boardFront[pos] = gem;
   }
 
-  Future<bool> fillStep(bool inverse) async {
+  Future<bool> _fillStep(bool inverse) async {
     bool hasMoved = false;
     final futures = <Future<void>>[];
     for (double row = boardSize.y - 2; row >= 0; row--) {
@@ -138,8 +144,8 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
           if (back != null && gemDown != null && gemDown.type == GemType.empty) {
             // Если гем под ним пустой
             remove(gemDown);
-            futures.add(moveGem(gem, Vector2(col, row + 1), speed: spawnSpeed));
-            futures.add(spawnGem(Vector2(col, row), GemType.empty));
+            futures.add(_moveGem(gem, Vector2(col, row + 1), speed: spawnSpeed));
+            futures.add(_spawnGem(Vector2(col, row), GemType.empty));
             hasMoved = true;
           } else {
             for (double diag = -1; diag <= 1; diag++) {
@@ -162,8 +168,8 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
 
                     if (!hasGemAbove) {
                       if (children.contains(diagGem)) remove(diagGem);
-                      await moveGem(gem, Vector2(diagX, row + 1), speed: spawnDiagSpeed);
-                      await spawnGem(Vector2(col, row), GemType.empty);
+                      await _moveGem(gem, Vector2(diagX, row + 1), speed: spawnDiagSpeed);
+                      await _spawnGem(Vector2(col, row), GemType.empty);
                       hasMoved = true;
                       break;
                     }
@@ -182,12 +188,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
       final gemBelow = boardFront[Vector2(col, 0)];
       if (gemBelow != null && gemBelow.type == GemType.empty) {
         remove(gemBelow);
-        await spawnGem(Vector2(col, 0), GemType.colored);
-
-        // gem.add(txt);
-        // final gemTarget = coordinate(gem.pos);
-        // gem.position += Vector2(0, -Gem.gemSize.y);
-        // (gem as GemMovable).move(gemTarget);
+        await _spawnGem(Vector2(col, 0), GemType.colored);
         hasMoved = true;
       }
     }
@@ -249,7 +250,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     return result;
   }
 
-  List<Gem>? findMatch(GemColored gem, Vector2 newPos) {
+  List<Gem>? _findMatch(GemColored gem, Vector2 newPos) {
     List<Gem> horisontalGems = [];
     List<Gem> verticalGems = [];
     List<Gem> matchGems = [];
@@ -301,7 +302,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     return null;
   }
 
-  Future<int> clearAllValidMatches() async {
+  Future<int> _clearAllValidMatches() async {
     int count = 0;
 
     final futures = <Future<bool>>[];
@@ -310,12 +311,12 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
       for (double col = 0; col < boardSize.x; col++) {
         final gem = boardFront[Vector2(col, row)];
         if (gem != null && gem is GemColored) {
-          final match = findMatch(gem, Vector2(col, row));
+          final match = _findMatch(gem, Vector2(col, row));
           if (match != null) {
             for (int index = 0; index < match.length; index++) {
               final found = match.elementAt(index);
               if (!cleared.contains(found)) {
-                futures.add(clearGem(found));
+                futures.add(_clearGem(found));
                 cleared.add(found);
               }
             }
@@ -330,7 +331,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     return count;
   }
 
-  Future<bool> clearGem(Gem gem) async {
+  Future<bool> _clearGem(Gem gem) async {
     if (gem is GemColored) {
       final target = screen.targets;
       final color = gem.color.toString();
@@ -360,7 +361,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         }
         target.addScore(1);
         remove(gem);
-        await spawnGem(gem.pos, GemType.empty);
+        await _spawnGem(gem.pos, GemType.empty);
 
         return true;
       }
@@ -369,7 +370,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     return false;
   }
 
-  Future<Gem> spawnGem(Vector2 pos, GemType type) async {
+  Future<Gem> _spawnGem(Vector2 pos, GemType type) async {
     Gem gem;
     switch (type) {
       case GemType.empty:
@@ -379,11 +380,6 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
         gem = GemSimple(color: GemColor.values.elementAt(_random.nextInt(GemColor.values.length - 1)), board: this);
         break;
     }
-    // final old = boardFront[pos];
-    // if (old != null && children.contains(old)) {
-    //   boardFront.remove(pos);
-    //   remove(old);
-    // }
     boardFront[pos] = gem;
     gem.pos = pos;
     gem.position = coordinate(pos);
@@ -401,7 +397,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     return Vector2.zero();
   }
 
-  bool isAdjacent(Gem gem1, Gem gem2) {
+  bool _isAdjacent(Gem gem1, Gem gem2) {
     final pos1 = gem1.pos;
     final pos2 = gem2.pos;
 
@@ -410,18 +406,19 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
   }
 
   Future<void> onTapGem(Gem gem) async {
-    if (allowClick) {
+    if (allowClick && !isEndLevel) {
       final selected = selectedGem;
       if (selected != null && selected is GemMovable && gem is GemMovable) {
         selected.cancelShake();
-        if (isAdjacent(gem, selected) && selected.pos != gem.pos) {
-          await swapGems(gem, selected);
-          if (findMatch(gem as GemColored, gem.pos) != null ||
-              findMatch(selected as GemColored, selected.pos) != null) {
+        if (_isAdjacent(gem, selected) && selected.pos != gem.pos) {
+          await _swapGems(gem, selected);
+          if (_findMatch(gem as GemColored, gem.pos) != null ||
+              _findMatch(selected as GemColored, selected.pos) != null) {
             selectedGem = null;
-            await spawnNewGems();
+            screen.targets.move();
+            await _spawnNewGems();
           } else {
-            await swapGems(gem, selected);
+            await _swapGems(gem, selected);
             selectedGem = null;
           }
         } else if (selected.pos == gem.pos) {
@@ -440,8 +437,7 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
 
   Future<void> onDragGem(Gem gem1, Gem gem2) async {
     if (gem1 is GemSimple && gem2 is GemSimple) {
-      print('${gem1.color} ${gem2.color}');
-      if (allowClick) {
+      if (allowClick && !isEndLevel) {
         allowClick = false;
         final selected = selectedGem;
         if (selected != null && selected is GemMovable) {
@@ -449,12 +445,13 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
           selectedGem = null;
         }
 
-        if (isAdjacent(gem1, gem2) && gem1.pos != gem2.pos) {
-          await swapGems(gem1, gem2);
-          if (findMatch(gem1 as GemColored, gem1.pos) != null || findMatch(gem2 as GemColored, gem2.pos) != null) {
-            await spawnNewGems();
+        if (_isAdjacent(gem1, gem2) && gem1.pos != gem2.pos) {
+          await _swapGems(gem1, gem2);
+          if (_findMatch(gem1, gem1.pos) != null || _findMatch(gem2, gem2.pos) != null) {
+            screen.targets.move();
+            await _spawnNewGems();
           } else {
-            await swapGems(gem1, gem2);
+            await _swapGems(gem1, gem2);
           }
         }
         allowClick = true;
@@ -462,11 +459,11 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
     }
   }
 
-  Future<void> swapGems(GemMovable gem1, GemMovable gem2) async {
+  Future<void> _swapGems(GemMovable gem1, GemMovable gem2) async {
     final oldPos = gem1.pos.clone();
     final futures = <Future<void>>[];
-    futures.add(moveGem(gem1, gem2.pos));
-    futures.add(moveGem(gem2, oldPos));
+    futures.add(_moveGem(gem1, gem2.pos));
+    futures.add(_moveGem(gem2, oldPos));
     await Future.wait(futures);
   }
 
