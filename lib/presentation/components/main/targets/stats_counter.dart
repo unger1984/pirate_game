@@ -10,8 +10,8 @@ class StatsCounter extends PositionComponent {
     await super.onLoad();
     final colorWhite = BasicPalette.white.color;
 
-    final bgSprite = await Sprite.load('png/coin_place.png');
-    final coinSprite = await Sprite.load('png/coin_icon.png');
+    final bgSprite = await Sprite.load('png/targets/coin_place.png');
+    final coinSprite = await Sprite.load('png/targets/coin_icon.png');
     size = Vector2(bgSprite.srcSize.x + coinSprite.srcSize.x / 2 - 10, coinSprite.srcSize.y - 15);
     final bg = SpriteComponent(sprite: bgSprite);
     await add(bg);

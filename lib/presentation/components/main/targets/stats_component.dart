@@ -21,12 +21,12 @@ class StatsComponent extends PositionComponent {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final bgSprite = await Sprite.load('png/stats_panel.png');
+    final bgSprite = await Sprite.load('png/targets/stats_panel.png');
     _bg.sprite = bgSprite;
     _bg.size = bgSprite.srcSize;
     size = _bg.size;
 
-    final activeSprite = await Sprite.load('png/progress_active.png');
+    final activeSprite = await Sprite.load('png/targets/progress_active.png');
     active.sprite = activeSprite;
     active.size = activeSprite.srcSize;
     _max = activeSprite.srcSize.x;

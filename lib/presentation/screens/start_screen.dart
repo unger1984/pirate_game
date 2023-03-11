@@ -28,11 +28,11 @@ class StartScreen extends PositionComponent with HasGameRef<PirateGame> {
     await add(bg);
     await add(flag);
 
-    btnSettings.sprite = await Sprite.load('png/btn_settings.png');
+    btnSettings.sprite = await Sprite.load('png/ui/btn_settings.png');
     btnSettings.onTap = showSettings;
     await add(btnSettings);
 
-    btnStart.sprite = await Sprite.load('png/btn_start.png');
+    btnStart.sprite = await Sprite.load('png/ui/btn_start.png');
     btnStart.onTap = start;
     final startText = TextComponent(
       text: S.current.start,
@@ -76,6 +76,6 @@ class StartScreen extends PositionComponent with HasGameRef<PirateGame> {
   }
 
   Future<void> start() async {
-    gameRef.start();
+    gameRef.onStart();
   }
 }

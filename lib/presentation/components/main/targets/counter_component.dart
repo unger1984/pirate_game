@@ -11,7 +11,7 @@ class CounterComponent extends SpriteComponent {
     await super.onLoad();
     final colorWhite = BasicPalette.white.color;
 
-    bgSprite = await Sprite.load('png/counter.png');
+    bgSprite = await Sprite.load('png/targets/counter.png');
     size = bgSprite.srcSize;
     sprite = bgSprite;
     anchor = Anchor.center;

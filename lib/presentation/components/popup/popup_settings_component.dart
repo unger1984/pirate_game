@@ -10,7 +10,7 @@ import 'package:pirate/utils/const.dart';
 class PopupSettingsComponent extends PopupComponent {
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('png/popup_settings.png');
+    sprite = await Sprite.load('png/ui/popup_settings.png');
     final sp = sprite;
     if (sp != null) {
       size = sp.srcSize;
@@ -18,7 +18,7 @@ class PopupSettingsComponent extends PopupComponent {
 
     final colorWhite = BasicPalette.white.color;
 
-    final bg = SpriteComponent(sprite: await Sprite.load('png/paper_big.png'));
+    final bg = SpriteComponent(sprite: await Sprite.load('png/ui/paper_big.png'));
     bg.position = size / 2 - bg.size / 2 + Vector2(20, 100);
     await add(bg);
 
@@ -35,7 +35,7 @@ class PopupSettingsComponent extends PopupComponent {
     titleText.position = Vector2(size.x / 2 - titleText.size.x / 2, 150);
     await add(titleText);
 
-    final btnSubmit = ButtonComponent(sprite: await Sprite.load('png/btn_start.png'));
+    final btnSubmit = ButtonComponent(sprite: await Sprite.load('png/ui/btn_start.png'));
     btnSubmit.position = bg.size / 2 - btnSubmit.size / 2 + Vector2(0, bg.size.y / 2 - 60);
     await bg.add(btnSubmit);
 

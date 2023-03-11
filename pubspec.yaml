@@ -53,6 +53,9 @@ flutter:
     - assets/images/jpg/
     - assets/images/png/
     - assets/images/png/gems/
+    - assets/images/png/map/
+    - assets/images/png/ui/
+    - assets/images/png/targets/
     - assets/audio/
 
 flutter_intl:

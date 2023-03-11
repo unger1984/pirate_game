@@ -14,8 +14,11 @@ import 'package:pirate/utils/log.dart';
 Future<void> main() async {
   final log = Logger('Main');
   WidgetsFlutterBinding.ensureInitialized();
-  // await DesktopWindow.setWindowSize(Size(1080, 1920));
   await Flame.device.fullScreen();
+  await Flame.device.setPortraitUpOnly();
+  // await DesktopWindow.setMinWindowSize(const Size(1080, 1920));
+  // await DesktopWindow.setMaxWindowSize(const Size(1080, 1920));
+  // await DesktopWindow.setWindowSize(const Size(1080, 1920));
 
   await dotenv.load(fileName: ".env");
   await setupGetIt();

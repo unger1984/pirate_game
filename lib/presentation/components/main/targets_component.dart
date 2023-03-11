@@ -30,16 +30,16 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final palmsSprite = await Sprite.load('png/palms_back.png');
+    final palmsSprite = await Sprite.load('png/targets/palms_back.png');
     palms.sprite = palmsSprite;
     palms.size = palmsSprite.srcSize;
-    final sandSprite = await Sprite.load('png/sand_main.png');
+    final sandSprite = await Sprite.load('png/targets/sand_main.png');
     sand.sprite = sandSprite;
     sand.size = sandSprite.srcSize;
-    final palmLeftSprite = await Sprite.load('png/palm_left.png');
+    final palmLeftSprite = await Sprite.load('png/targets/palm_left.png');
     palmLeft.sprite = palmLeftSprite;
     palmLeft.size = palmLeftSprite.srcSize;
-    final palmRightSprite = await Sprite.load('png/palm_right.png');
+    final palmRightSprite = await Sprite.load('png/targets/palm_right.png');
     palmRight.sprite = palmRightSprite;
     palmRight.size = palmRightSprite.srcSize;
 

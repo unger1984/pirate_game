@@ -5,7 +5,7 @@ class StatsProgress extends PositionComponent {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final bgSprite = await Sprite.load('png/progress_inactive.png');
+    final bgSprite = await Sprite.load('png/targets/progress_inactive.png');
     size = bgSprite.srcSize;
     final bg = SpriteComponent(sprite: bgSprite);
     bg.size = bgSprite.srcSize;

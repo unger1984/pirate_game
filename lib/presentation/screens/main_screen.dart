@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:pirate/domain/entities/target_chest_entity.dart';
 import 'package:pirate/domain/entities/target_entity.dart';
 import 'package:pirate/presentation/components/common/button_component.dart';
 import 'package:pirate/presentation/components/main/board_component.dart';
@@ -15,17 +14,6 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
   late final BoardComponent board = BoardComponent(screen: this);
   late final TargetsComponent targets = TargetsComponent(screen: this);
 
-  final targetConfig = const TargetEntity(
-    type: TargetType.moves,
-    limit: 2,
-    ches1: TargetChestEntity(gem: 'red', total: 5),
-    ches2: TargetChestEntity(gem: 'green', total: 5),
-    ches3: TargetChestEntity(gem: 'blue', total: 5),
-    star1: 15,
-    star2: 20,
-    star3: 30,
-  );
-
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -35,11 +23,11 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     bg.size = size;
     await add(bg);
 
-    btnSettings.sprite = await Sprite.load('png/btn_settings.png');
+    btnSettings.sprite = await Sprite.load('png/ui/btn_settings.png');
     btnSettings.onTap = showSettings;
 
     await add(targets);
-    targets.init(targetConfig);
+    // targets.init(targetConfig);
 
     // board = ;
     await add(board);
@@ -47,7 +35,6 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
 
     // board.init(targets);
     // board.spawnNewGems();
-    board.fillOnStart();
 
     await add(btnSettings);
     await add(popupSettings);
@@ -63,6 +50,11 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     btnSettings.position = Vector2(size.x - btnSettings.scaledSize.x - mX, mY);
     board.position = Vector2(size.x / 2 - board.scaledSize.x / 2, targets.position.y + targets.scaledSize.y + 20);
     super.onGameResize(size);
+  }
+
+  void setLevel(TargetEntity targetConfig) {
+    targets.init(targetConfig);
+    board.fillOnStart();
   }
 
   void endLimit() {

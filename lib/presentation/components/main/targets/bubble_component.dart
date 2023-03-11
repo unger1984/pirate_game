@@ -16,8 +16,8 @@ class BubbleComponent extends SpriteComponent {
     await super.onLoad();
     final colorWhite = BasicPalette.white.color;
 
-    spriteBubbleGreen = await Sprite.load('png/bubble_green.png');
-    spriteBubbleOrange = await Sprite.load('png/bubble_orange.png');
+    spriteBubbleGreen = await Sprite.load('png/targets/bubble_green.png');
+    spriteBubbleOrange = await Sprite.load('png/targets/bubble_orange.png');
 
     size = spriteBubbleGreen.srcSize;
     sprite = spriteBubbleOrange;

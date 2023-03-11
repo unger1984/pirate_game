@@ -7,8 +7,8 @@ class Star extends SpriteComponent {
 
   @override
   Future<void> onLoad() async {
-    spriteActive = await Sprite.load('png/star_full.png');
-    spriteInactive = await Sprite.load('png/star_empty.png');
+    spriteActive = await Sprite.load('png/targets/star_full.png');
+    spriteInactive = await Sprite.load('png/targets/star_empty.png');
     sprite = spriteInactive;
     size = spriteInactive.srcSize;
 

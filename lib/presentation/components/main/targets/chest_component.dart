@@ -41,8 +41,8 @@ class ChestComponent extends PositionComponent {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    _spriteClose = await Sprite.load('png/chest_close_$type.png');
-    _spriteOpen = await Sprite.load('png/chest_open_$type.png');
+    _spriteClose = await Sprite.load('png/targets/chest_close_$type.png');
+    _spriteOpen = await Sprite.load('png/targets/chest_open_$type.png');
 
     chest.sprite = status == ChestStatus.open ? _spriteOpen : _spriteClose;
     chest.size = status == ChestStatus.open ? _spriteOpen.srcSize : _spriteClose.srcSize;

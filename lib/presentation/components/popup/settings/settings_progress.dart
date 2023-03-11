@@ -33,17 +33,17 @@ SettingsSprites spritesByType(SettingsProgressType type) {
   switch (type) {
     case SettingsProgressType.sound:
       return const SettingsSprites(
-        ico: 'png/sound.png',
-        progress: 'png/progress_active_green.png',
-        btnMinus: 'png/btn_minus_button.png',
-        btnPlus: 'png/btn_plus_button.png',
+        ico: 'png/ui/sound.png',
+        progress: 'png/ui/progress_active_green.png',
+        btnMinus: 'png/ui/btn_minus_button.png',
+        btnPlus: 'png/ui/btn_plus_button.png',
       );
     case SettingsProgressType.music:
       return const SettingsSprites(
-        ico: 'png/music.png',
-        progress: 'png/progress_active_orange.png',
-        btnMinus: 'png/btn_minus_orange.png',
-        btnPlus: 'png/btn_plus_orange.png',
+        ico: 'png/ui/music.png',
+        progress: 'png/ui/progress_active_orange.png',
+        btnMinus: 'png/ui/btn_minus_orange.png',
+        btnPlus: 'png/ui/btn_plus_orange.png',
       );
   }
 }
@@ -80,7 +80,7 @@ class SettingsProgress extends PositionComponent {
     add(icoComponetn);
 
     progress = ProgressComponent(
-      sprite: await Sprite.load('png/progress_settings_inactive.png'),
+      sprite: await Sprite.load('png/ui/progress_settings_inactive.png'),
       child: SpriteComponent(sprite: await Sprite.load(sprites.progress)),
     );
     progress.position = Vector2(size.x / 2 - progress.size.x / 2, icoComponetn.size.y + 50);
