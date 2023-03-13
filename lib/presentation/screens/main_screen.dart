@@ -3,12 +3,16 @@ import 'package:pirate/domain/entities/target_entity.dart';
 import 'package:pirate/presentation/components/common/button_component.dart';
 import 'package:pirate/presentation/components/main/board_component.dart';
 import 'package:pirate/presentation/components/main/targets_component.dart';
+import 'package:pirate/presentation/components/popup/overlay_component.dart';
+import 'package:pirate/presentation/components/popup/popup_completed_component.dart';
 import 'package:pirate/presentation/components/popup/popup_settings_component.dart';
 import 'package:pirate/presentation/pirate_game.dart';
 import 'package:pirate/utils/const.dart';
 
 class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
+  final overlay = OverlayComponent();
   final popupSettings = PopupSettingsComponent();
+  final popupCompleted = PopupCompletedComponent();
   final bg = SpriteComponent();
   final btnSettings = ButtonComponent(withScale: true);
   late final BoardComponent board = BoardComponent(screen: this);
@@ -33,10 +37,9 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     await add(board);
     board.position.y = targets.position.y + targets.scaledSize.y + 20;
 
-    // board.init(targets);
-    // board.spawnNewGems();
-
     await add(btnSettings);
+
+    await add(popupCompleted);
     await add(popupSettings);
 
     onGameResize(size);
@@ -62,10 +65,14 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
   }
 
   void showResult() {
-    // TODO
+    _showCompleted();
   }
 
-  void showSettings() {
-    popupSettings.show();
+  Future<void> showSettings() async {
+    await popupSettings.show();
+  }
+
+  Future<void> _showCompleted() async {
+    await popupCompleted.show();
   }
 }

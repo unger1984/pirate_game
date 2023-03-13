@@ -28,6 +28,17 @@ class PirateGame extends FlameGame with HasTappableComponents, HasDraggableCompo
 
     await add(blocProvider);
     await blocProvider.add(startScreen);
+    // await blocProvider.add(mainScreen);
+    // mainScreen.setLevel(const TargetEntity(
+    //   type: TargetType.moves,
+    //   limit: 2,
+    //   ches1: TargetChestEntity(gem: 'red', total: 5),
+    //   ches2: TargetChestEntity(gem: 'green', total: 5),
+    //   ches3: TargetChestEntity(gem: 'blue', total: 5),
+    //   star1: 15,
+    //   star2: 20,
+    //   star3: 30,
+    // ));
   }
 
   void _clear() {

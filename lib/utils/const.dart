@@ -16,3 +16,6 @@ const double clearSpeed = 1500;
 
 /// Интервал уменьшения гема при очистке.
 const double clearDuration = 0.8;
+
+/// Скорость всплытия попапа.
+const double popupSpeed = 2000;

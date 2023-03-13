@@ -9,6 +9,7 @@ import 'package:pirate/presentation/pirate_game.dart';
 import 'package:pirate/utils/const.dart';
 
 class StartScreen extends PositionComponent with HasGameRef<PirateGame> {
+  // final overlay = OverlayComponent();
   final popupSettings = PopupSettingsComponent();
   final bg = SpriteComponent();
   final flag = FlagComponent();
@@ -71,11 +72,11 @@ class StartScreen extends PositionComponent with HasGameRef<PirateGame> {
     super.onGameResize(size);
   }
 
-  void showSettings() {
-    popupSettings.show();
+  Future<void> showSettings() async {
+    await popupSettings.show();
   }
 
   Future<void> start() async {
-    gameRef.onStart();
+    await gameRef.onStart();
   }
 }

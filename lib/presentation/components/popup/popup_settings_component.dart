@@ -5,7 +5,6 @@ import 'package:pirate/generated/l10n.dart';
 import 'package:pirate/presentation/components/common/button_component.dart';
 import 'package:pirate/presentation/components/popup/popup_component.dart';
 import 'package:pirate/presentation/components/popup/settings/settings_progress.dart';
-import 'package:pirate/utils/const.dart';
 
 class PopupSettingsComponent extends PopupComponent {
   @override
@@ -68,11 +67,5 @@ class PopupSettingsComponent extends PopupComponent {
     onGameResize(gameRef.size);
 
     return super.onLoad();
-  }
-
-  @override
-  void onGameResize(Vector2 size) {
-    scale = Vector2.all(size.x / maxWidth);
-    super.onGameResize(size);
   }
 }

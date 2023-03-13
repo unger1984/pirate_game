@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 
-class Star extends SpriteComponent {
+class StarComponent extends SpriteComponent {
   late final Sprite spriteActive;
   late final Sprite spriteInactive;
   bool _active = false;

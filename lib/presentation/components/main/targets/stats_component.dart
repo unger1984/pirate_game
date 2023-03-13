@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:pirate/presentation/components/main/targets/star.dart';
+import 'package:pirate/presentation/components/common/star_component.dart';
 import 'package:pirate/presentation/components/main/targets/stats_counter.dart';
 import 'package:pirate/presentation/components/main/targets/stats_progress.dart';
 
@@ -8,9 +8,9 @@ class StatsComponent extends PositionComponent {
   final _statsProgress = StatsProgress();
   final active = SpriteComponent();
   final counter = StatsCounter();
-  final star1 = Star();
-  final star2 = Star();
-  final star3 = Star();
+  final star1 = StarComponent();
+  final star2 = StarComponent();
+  final star3 = StarComponent();
   late final double _max;
 
   int _scoreStar1 = 0;
