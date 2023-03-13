@@ -26,12 +26,13 @@ class PopupSettingsComponent extends PopupComponent {
       textRenderer: TextPaint(
         style: TextStyle(
           color: colorWhite,
+          fontFamily: 'Fanta',
           fontSize: 72,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
-    titleText.position = Vector2(size.x / 2 - titleText.size.x / 2, 150);
+    titleText.position = Vector2(size.x / 2 - titleText.size.x / 2, 190);
     await add(titleText);
 
     final btnSubmit = ButtonComponent(sprite: await Sprite.load('png/ui/btn_start.png'));
@@ -45,6 +46,7 @@ class PopupSettingsComponent extends PopupComponent {
       textRenderer: TextPaint(
         style: TextStyle(
           color: colorWhite,
+          fontFamily: 'Krabuler',
           fontSize: 82,
           fontWeight: FontWeight.bold,
         ),

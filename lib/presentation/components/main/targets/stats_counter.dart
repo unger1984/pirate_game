@@ -24,6 +24,7 @@ class StatsCounter extends PositionComponent {
       textRenderer: TextPaint(
         style: TextStyle(
           color: colorWhite,
+          fontFamily: 'Krabuler',
           fontSize: 30,
           fontWeight: FontWeight.bold,
         ),

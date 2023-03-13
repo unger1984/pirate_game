@@ -25,11 +25,10 @@ class MapScreen extends PositionComponent with HasGameRef<PirateGame> {
     map = MapComponent(onTapLevel: onTapLevel);
     await add(map);
     map.init(1);
-
-    // onGameResize(gameRef.size);
   }
 
   void onTapLevel(int num) {
+    // TODO загрузка уровня
     gameRef.goMain(targetConfig);
   }
 }

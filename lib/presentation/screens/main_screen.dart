@@ -17,6 +17,7 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
   final btnSettings = ButtonComponent(withScale: true);
   late final BoardComponent board = BoardComponent(screen: this);
   late final TargetsComponent targets = TargetsComponent(screen: this);
+  late TargetEntity _targetConfig;
 
   @override
   Future<void> onLoad() async {
@@ -56,7 +57,14 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
   }
 
   void setLevel(TargetEntity targetConfig) {
-    targets.init(targetConfig);
+    _targetConfig = targetConfig;
+    targets.init(_targetConfig);
+    board.fillOnStart();
+  }
+
+  Future<void> restart() async {
+    await popupCompleted.hide();
+    targets.init(_targetConfig);
     board.fillOnStart();
   }
 
@@ -64,7 +72,8 @@ class MainScreen extends PositionComponent with HasGameRef<PirateGame> {
     board.isEndLevel = true;
   }
 
-  void showResult() {
+  void showResult(bool win) {
+    popupCompleted.setResult(win, 1, targets.stats.score, targets.stats.stars);
     _showCompleted();
   }
 

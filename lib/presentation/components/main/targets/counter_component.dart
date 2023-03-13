@@ -21,6 +21,7 @@ class CounterComponent extends SpriteComponent {
       textRenderer: TextPaint(
         style: TextStyle(
           color: colorWhite,
+          fontFamily: 'Krabuler',
           fontSize: 82.2,
           fontWeight: FontWeight.bold,
         ),

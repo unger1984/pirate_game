@@ -58,6 +58,14 @@ flutter:
     - assets/images/png/targets/
     - assets/audio/
 
+  fonts:
+    - family: Fanta
+      fonts:
+        - asset: assets/fonts/fanta.ttf
+    - family: Krabuler
+      fonts:
+        - asset: assets/fonts/Krabuler.ttf
+
 flutter_intl:
   enabled: true
   class_name: S

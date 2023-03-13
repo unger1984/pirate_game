@@ -49,6 +49,9 @@ class StatsComponent extends PositionComponent {
     _scoreStar1 = star1Val;
     _scoreStar2 = star2Val;
     _scoreStar3 = star3Val;
+    star1.active = false;
+    star2.active = false;
+    star3.active = false;
 
     star3.position = Vector2(_max - 10, 0);
 
@@ -72,4 +75,8 @@ class StatsComponent extends PositionComponent {
     if (current >= _scoreStar2 && !star2.active) star2.active = true;
     if (current >= _scoreStar3 && !star3.active) star3.active = true;
   }
+
+  int get score => counter.count;
+
+  int get stars => (star1.active ? 1 : 0) + (star2.active ? 1 : 0) + (star3.active ? 1 : 0);
 }

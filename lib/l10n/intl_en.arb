@@ -7,5 +7,11 @@
     "title3": "GAMGE",
     "settings": "SETTINGS",
     "save": "SAVE",
-    "start": "START"
+    "start": "START",
+
+    "failed": "FAILED!",
+    "completed": "COMPLETED!",
+
+    "level_result": "LEVEL {num} {status}",
+    "score": "YOUR SCORE: {score}"
 }

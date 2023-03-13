@@ -32,7 +32,8 @@ class BubbleComponent extends SpriteComponent {
       textRenderer: TextPaint(
         style: TextStyle(
           color: colorWhite,
-          fontSize: 22,
+          fontFamily: 'Krabuler',
+          fontSize: 32,
           fontWeight: FontWeight.bold,
         ),
       ),

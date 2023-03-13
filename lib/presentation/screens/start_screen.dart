@@ -40,6 +40,7 @@ class StartScreen extends PositionComponent with HasGameRef<PirateGame> {
       textRenderer: TextPaint(
         style: TextStyle(
           color: colorWhite,
+          fontFamily: 'Krabuler',
           fontSize: 85.5,
           fontWeight: FontWeight.bold,
         ),

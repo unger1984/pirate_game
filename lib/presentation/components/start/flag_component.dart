@@ -24,7 +24,8 @@ class FlagComponent extends SpriteComponent with HasGameRef {
       textRenderer: TextPaint(
         style: TextStyle(
           color: white,
-          fontSize: 44,
+          fontFamily: 'Krabuler',
+          fontSize: 64,
         ),
       ),
     );
@@ -33,7 +34,8 @@ class FlagComponent extends SpriteComponent with HasGameRef {
       textRenderer: TextPaint(
         style: TextStyle(
           color: white,
-          fontSize: 84,
+          fontFamily: 'Krabuler',
+          fontSize: 150,
         ),
       ),
     );
@@ -42,7 +44,8 @@ class FlagComponent extends SpriteComponent with HasGameRef {
       textRenderer: TextPaint(
         style: TextStyle(
           color: white,
-          fontSize: 44,
+          fontFamily: 'Krabuler',
+          fontSize: 64,
         ),
       ),
     );
@@ -59,8 +62,8 @@ class FlagComponent extends SpriteComponent with HasGameRef {
     final testSize = text.size;
 
     title1.position += Vector2(testSize.x / 2 - title1.size.x / 2, 0);
-    title2.position += Vector2(testSize.x / 2 - size2.x / 2, size1.y + 20);
-    title3.position += Vector2(testSize.x / 2 - size3.x / 2, size1.y + size2.y + 40);
+    title2.position += Vector2(testSize.x / 2 - size2.x / 2, size1.y - 20);
+    title3.position += Vector2(testSize.x / 2 - size3.x / 2, size1.y + size2.y -20);
 
     await add(text);
 

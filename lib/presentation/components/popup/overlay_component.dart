@@ -5,6 +5,7 @@ import 'package:pirate/presentation/pirate_game.dart';
 
 class OverlayComponent extends SpriteComponent with HasGameRef<PirateGame>, TapCallbacks {
   late final PopupComponent popup;
+  bool hideOnTap = true;
 
   @override
   Future<void> onLoad() async {
@@ -23,6 +24,6 @@ class OverlayComponent extends SpriteComponent with HasGameRef<PirateGame>, TapC
 
   @override
   void onTapUp(TapUpEvent event) {
-    popup.hide();
+    if (hideOnTap) popup.hide();
   }
 }

@@ -30,7 +30,7 @@ class PointComponent extends PositionComponent with HasGameRef<PirateGame>, TapC
     _spriteOrange = await Sprite.load('png/map/pointer_orange.png');
     _spriteGrey = await Sprite.load('png/map/pointer_grey.png');
     _spriteArrow = await Sprite.load('png/map/arrow.png');
-    final _spriteStar = await Sprite.load('png/map/star.png');
+    final spriteStar = await Sprite.load('png/map/star.png');
 
     size = _spriteOrange.srcSize + Vector2.all(200) + Vector2(0, _spriteArrow.srcSize.y + 100);
     _point.size = _spriteOrange.srcSize + Vector2.all(200);
@@ -59,16 +59,16 @@ class PointComponent extends PositionComponent with HasGameRef<PirateGame>, TapC
     await _point.add(_text);
     _text.position = Vector2(_point.size.x / 2 - _text.size.x / 2, _point.size.y / 2 - _text.size.y);
 
-    _star1.sprite = _spriteStar;
-    _star1.size = _spriteStar.srcSize;
+    _star1.sprite = spriteStar;
+    _star1.size = spriteStar.srcSize;
     _star1.position = Vector2(50, size.y - _star1.size.y - 70);
     // await add(_star1);
-    _star2.sprite = _spriteStar;
-    _star2.size = _spriteStar.srcSize * 1.5;
+    _star2.sprite = spriteStar;
+    _star2.size = spriteStar.srcSize * 1.5;
     _star2.position = Vector2(size.x / 2 - _star2.size.x / 2, size.y - _star2.size.y - 20);
     // await add(_star2);
-    _star3.sprite = _spriteStar;
-    _star3.size = _spriteStar.srcSize;
+    _star3.sprite = spriteStar;
+    _star3.size = spriteStar.srcSize;
     _star3.position = Vector2(size.x - _star3.size.x - 50, size.y - _star3.size.y - 70);
     // await add(_star3);
 

@@ -79,7 +79,10 @@ class ChestComponent extends PositionComponent {
   int get current => _bubble.current;
 
   void init(TargetChestEntity target) {
+    status = ChestStatus.open;
+    chest.sprite = _spriteOpen;
     gem = target.gem;
+    _bubble.sprite = _bubble.spriteBubbleOrange;
     _bubble.target = target.total;
   }
 }

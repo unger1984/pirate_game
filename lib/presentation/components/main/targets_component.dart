@@ -72,8 +72,6 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
     position = Vector2.zero();
     position = Vector2(0, gameRef.size.y / 3 - scaledSize.y + 50);
 
-    // stats.setProgress(50);
-
     onGameResize(gameRef.size);
   }
 
@@ -86,6 +84,7 @@ class TargetsComponent extends PositionComponent with HasGameRef<PirateGame> {
 
   void init(TargetEntity target) {
     timer = 0;
+    limit = 0;
     stats.init(target.star1, target.star2, target.star3);
     chest1.init(target.ches1);
     chest2.init(target.ches2);

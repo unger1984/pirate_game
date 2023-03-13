@@ -4,7 +4,7 @@ class ProgressComponent extends SpriteComponent {
   late final double max;
   final SpriteComponent child;
 
-  ProgressComponent({required Sprite sprite, required this.child}) : super(sprite: sprite) {}
+  ProgressComponent({required Sprite sprite, required this.child}) : super(sprite: sprite);
 
   @override
   Future<void> onLoad() async {

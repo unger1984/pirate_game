@@ -93,9 +93,13 @@ class BoardComponent extends PositionComponent with HasGameRef<PirateGame> {
       needRefill = count > 0;
     }
     if (!isEndLevel) {
-      allowClick = true;
+      if (screen.targets.complete) {
+        screen.showResult(true);
+      } else {
+        allowClick = true;
+      }
     } else {
-      screen.showResult();
+      screen.showResult(screen.targets.complete);
     }
   }
 

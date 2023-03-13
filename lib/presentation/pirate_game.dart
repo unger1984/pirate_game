@@ -1,6 +1,7 @@
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame_bloc/flame_bloc.dart';
+import 'package:pirate/domain/entities/target_chest_entity.dart';
 import 'package:pirate/domain/entities/target_entity.dart';
 import 'package:pirate/presentation/blocs/sound_bloc.dart';
 import 'package:pirate/presentation/screens/main_screen.dart';
@@ -27,18 +28,19 @@ class PirateGame extends FlameGame with HasTappableComponents, HasDraggableCompo
     blocProvider = FlameBlocProvider<SoundBLoC, SoundState>.value(value: soundBLoC);
 
     await add(blocProvider);
-    await blocProvider.add(startScreen);
-    // await blocProvider.add(mainScreen);
-    // mainScreen.setLevel(const TargetEntity(
-    //   type: TargetType.moves,
-    //   limit: 2,
-    //   ches1: TargetChestEntity(gem: 'red', total: 5),
-    //   ches2: TargetChestEntity(gem: 'green', total: 5),
-    //   ches3: TargetChestEntity(gem: 'blue', total: 5),
-    //   star1: 15,
-    //   star2: 20,
-    //   star3: 30,
-    // ));
+    // await blocProvider.add(startScreen);
+    await blocProvider.add(mainScreen);
+    mainScreen.setLevel(const TargetEntity(
+      type: TargetType.moves,
+      limit: 2,
+      ches1: TargetChestEntity(gem: 'red', total: 15),
+      ches2: TargetChestEntity(gem: 'green', total: 15),
+      ches3: TargetChestEntity(gem: 'blue', total: 15),
+      star1: 15,
+      star2: 20,
+      star3: 30,
+    ));
+    // mainScreen.showResult();
   }
 
   void _clear() {
